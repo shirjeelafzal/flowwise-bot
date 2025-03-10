@@ -5,3 +5,4 @@ python-dotenv
 langchain_community
 fastapi
 langchain_openai
+httpx

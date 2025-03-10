@@ -1,0 +1,195 @@
+**AI Message Agent UI and Backend Integration Training Prompt**
+
+## Objective:
+Train Replit AI to build an AI-powered Message Agent UI that handles incoming messages from multiple channels and connects to a backend for structured responses and appointment scheduling. The AI should integrate seamlessly with SMS, email, WhatsApp, and social media APIs, enabling automation and human escalation when needed. The codebase should be stored in a database for continuous updates and improvements.
+
+---
+
+## 1. Core Features of the AI Message Agent
+
+### Multi-Channel Integration:
+- Connect to SMS, live chat, email, WhatsApp, social media DMs, and website chat.
+- Use APIs such as Twilio, WhatsApp Business API, Meta Messenger API, and email automation tools like Zapier and SendGrid.
+
+### Word Board Response System:
+- Predefined message templates categorized by inquiry type (e.g., pricing, services, availability).
+- AI selects the most appropriate response while allowing for customization.
+
+### Lead Qualification & Appointment Scheduling:
+- Asks relevant questions to assess client fit.
+- Integrates with scheduling tools such as Calendly, HubSpot, and Acuity Scheduling.
+
+### Follow-Ups & Reminders:
+- Tracks conversation history to send personalized follow-ups.
+- Sends reminders and confirmations via SMS or email.
+
+### Learning & Optimization:
+- AI adapts responses based on customer interactions.
+- Admin dashboard provides analytics on engagement and conversion rates.
+
+---
+
+## 2. Tech Stack to Build It
+
+- **AI & Chatbot Framework:** OpenAI’s GPT API (fine-tuned for customer service & sales).
+- **Communication API:** Twilio, WhatsApp API, Meta Messenger API, SendGrid (for SMS, calls, and emails).
+- **CRM Integration:** HubSpot, Salesforce, or a custom database to track leads.
+- **Scheduling API:** Calendly, Acuity Scheduling, or Google Calendar integration.
+- **No-Code Automation (Optional):** Zapier or Make.com for easy workflow automation.
+
+---
+
+## 3. Steps to Build & Deploy
+
+### 1. Train the AI on Word Board Responses
+- Define common customer inquiries and ideal responses.
+- Use OpenAI’s fine-tuning or embeddings to match questions with the best answer.
+
+### 2. Set Up Multi-Channel Integration
+- Use APIs to connect the chatbot with SMS, email, social media, and live chat.
+- Ensure a central dashboard for managing all conversations.
+
+### 3. Implement Appointment Booking Logic
+- AI should recognize appointment-related keywords.
+- Use an API to check availability and book appointments automatically.
+
+### 4. Automate Follow-Ups & Reminders
+- Set up triggers for follow-ups if a customer doesn’t book right away.
+- Use SMS/email reminders before scheduled appointments.
+
+### 5. Test & Optimize
+- Run test conversations to refine AI responses.
+- Monitor conversion rates and tweak messaging for better results.
+
+---
+
+## 4. Potential Enhancements
+
+- **Voice Assistant Integration:** Add voice bot capabilities for phone call handling.
+- **Sentiment Analysis:** AI detects customer emotions and adjusts tone accordingly.
+- **Live Agent Escalation:** Seamless handoff to a human rep if needed.
+
+---
+
+## 5. Deployment & Hosting
+
+### Deployment Steps:
+
+1. **Install Gradio (if not already installed):**
+   ```bash
+   pip install gradio
+   ```
+
+2. **Create a Python Script (chatbot.py):**
+   ```python
+   import gradio as gr
+
+   class AIMessageAgent:
+       def __init__(self, word_board):
+           self.word_board = word_board
+
+       def get_response(self, user_message):
+           keyword_map = {...}  # Mapping predefined in the full doc
+           for keyword, response_name in keyword_map.items():
+               if keyword in user_message:
+                   return self.word_board.get(response_name, "I'm happy to assist! Could you provide more details?")
+           return "I'm here to help! What size mattress are you interested in?"
+   ```
+
+3. **Run the Script:**
+   ```bash
+   python chatbot.py
+   ```
+
+4. **Test the Chatbot:**
+   - Launches a local web server for testing.
+   - Generates a shareable public link.
+
+---
+
+## 6. Digital Ocean Deployment
+
+### Necessary Configurations:
+
+- **Dockerized Deployment:**
+  - Dockerfile & docker-compose.yml for easy setup.
+  - Nginx as a reverse proxy.
+  - SSL/TLS (Let’s Encrypt) for secure connections.
+
+- **Multi-Channel Messaging:**
+  - Twilio SMS API setup.
+  - WhatsApp Business API / Twilio WhatsApp configuration.
+  - Facebook Messenger API connection.
+  - Telegram Bot API for company communication.
+
+- **n8n Automation:**
+  - Prebuilt lead management workflow (capture, follow-ups, scheduling).
+  - AI escalation to human agents if needed.
+  - Appointment reminders & notifications via SMS/WhatsApp.
+
+- **Flowise AI Workflow:**
+  - Message Categorization (pricing, availability, scheduling).
+  - Response Automation using the word board system.
+  - Dynamic Scheduling pulling from Google Calendar / CRM.
+  - AI Analytics & Reporting.
+
+---
+
+## 7. Deployment Instructions
+
+1. **Upload Files to Digital Ocean:**
+   ```bash
+   ssh user@yourserver_ip
+   scp Dockerfile docker-compose.yml nginx.conf user@yourserver_ip:/home/user/
+   ```
+
+2. **Install Docker & Docker Compose:**
+   ```bash
+   sudo apt update && sudo apt install -y docker docker-compose
+   ```
+
+3. **Set Up Environment Variables:**
+   ```bash
+   echo "OPENAI_API_KEY=your_openai_key
+   TWILIO_SID=your_twilio_sid
+   TWILIO_AUTH_TOKEN=your_twilio_auth
+   WHATSAPP_API_KEY=your_whatsapp_api
+   FACEBOOK_PAGE_ACCESS_TOKEN=your_facebook_token
+   TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+   N8N_USER=your_n8n_user
+   N8N_PASSWORD=your_n8n_password" > .env
+   ```
+
+4. **Start the Services:**
+   ```bash
+   docker-compose up -d
+   ```
+
+---
+
+## 8. Next Steps
+
+- **n8n workflows for:**
+  - Lead capturing & follow-ups
+  - Appointment scheduling
+  - AI-human agent escalation
+
+- **Configure Flowise AI logic for:**
+  - Message categorization (pricing, availability, scheduling).
+  - Dynamic responses based on your word board system.
+  - Appointment scheduling integration with Google Calendar or CRM.
+
+---
+
+### Final Checklist:
+✅ Docker Deployment: Ready to run `docker-compose up -d`.
+✅ n8n Workflow: Automates lead capture, scheduling, and AI-human escalation.
+✅ Flowise AI Workflow: Categorizes messages and automates responses.
+✅ API Integrations: Twilio, WhatsApp, Facebook Messenger, and Telegram.
+✅ CRM & Scheduling: HubSpot, Calendly, and Google Calendar integrations.
+✅ Testing & Optimization: Monitor, refine, and improve AI responses.
+
+---
+
+This document will guide the AI Agent's development for seamless deployment, maintenance, and updates.
+
