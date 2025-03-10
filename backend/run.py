@@ -7,7 +7,7 @@ import uvicorn
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5000"],  # Adjust this for production
+    allow_origins=["http://localhost:5000","http://192.241.167.174:5000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
