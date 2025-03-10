@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import type { Channel } from "@shared/schema";
+import axios from "axios";
 
 interface Message {
   role: "user" | "assistant";
@@ -96,35 +97,42 @@ export default function Chat() {
     }
   };
 
-  const handleSendMessage = async () => {
-    if (!input.trim()) return;
 
-    const userMessage = input.trim();
-    setInput("");
 
-    // Add user message to chat
-    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
-    setIsLoading(true);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
 
-    try {
-      // TODO: Implement actual API call to backend
-      setTimeout(() => {
-        setMessages(prev => [...prev, { 
-          role: "assistant", 
-          content: "Hi! I'm Ali, your AI assistant. I'm here to help you with your messages and communications."
-        }]);
-        setIsLoading(false);
-      }, 1000);
-    } catch (error) {
-      console.error("Failed to get AI response:", error);
-      setIsLoading(false);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
+const handleSendMessage = async () => {
+  if (!input.trim()) return;
+
+  const userMessage = input.trim();
+  setInput("");
+
+  // Add user message to chat
+  setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+  setIsLoading(true);
+
+  try {
+    const { data } = await axios.post(`${API_BASE_URL}/chat`, {
+      question: userMessage,
+      user: "123456789" // Replace with dynamic user ID if available
+    });
+
+    const assistantResponse = data.response?.[0]?.output || "I'm not sure how to respond to that.";
+
+    setMessages(prev => [...prev, { role: "assistant", content: assistantResponse }]);
+  } catch (error: any) {
+    console.error("Error sending message:", error);
+
+    toast({
+      title: "Error",
+      description: error.response?.data?.detail || "Failed to get AI response.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+  
 
   return (
     <div className="h-full p-6 flex flex-col space-y-6">

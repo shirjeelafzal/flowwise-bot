@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException, APIRouter, Depends
 import httpx
 from app.dependencies import get_chatbot
 from app.agent import AIMessageAgent
-
+from app import schemas
 
 # Load environment variables
 load_dotenv()
@@ -14,6 +14,8 @@ router = APIRouter()
 # Global Variables
 MAKE_API_BASE_URL = os.getenv("MAKE_API_BASE_URL")
 MAKE_API_TOKEN = os.getenv("MAKE_API_TOKEN")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+
 HEADERS = {
     "Authorization": f"Token {MAKE_API_TOKEN}"
 }
@@ -23,7 +25,6 @@ def chat(user_message: str, chatbot: AIMessageAgent = Depends(get_chatbot)):
     if not user_message:
         raise HTTPException(status_code=400, detail="User message cannot be empty.")
     response = chatbot.get_response(user_message)
-    print(response)
     return {"response": response}
 
 @router.get("/api/connections")
@@ -80,3 +81,21 @@ async def get_scenarios():
 
     except httpx.RequestError:
         raise HTTPException(status_code=500, detail="Failed to connect to external API")
+
+
+
+@router.post("/api/chat")
+async def talk_to_ali(request: schemas.ChatRequest):
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(
+                WEBHOOK_URL,
+                json=request.dict(),
+                headers={"Content-Type": "application/json"}
+            )
+            response.raise_for_status()
+            return {"status": "success", "response": response.json()}
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
+        except httpx.RequestError:
+            raise HTTPException(status_code=500, detail="Failed to send request to webhook")
