@@ -15,6 +15,7 @@ router = APIRouter()
 MAKE_API_BASE_URL = os.getenv("MAKE_API_BASE_URL")
 MAKE_API_TOKEN = os.getenv("MAKE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+ANALYTICS_WEBHOOK_URL = os.getenv("ANALYTICS_WEBHOOK_URL")
 
 HEADERS = {
     "Authorization": f"Token {MAKE_API_TOKEN}"
@@ -95,6 +96,21 @@ async def talk_to_ali(request: schemas.ChatRequest):
             )
             response.raise_for_status()
             return {"status": "success", "response": response.json()}
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
+        except httpx.RequestError:
+            raise HTTPException(status_code=500, detail="Failed to send request to webhook")
+
+@router.get("/api/analytics")
+async def analytics():
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(
+                ANALYTICS_WEBHOOK_URL,
+                headers={"Content-Type": "application/json"}
+            )
+            response.raise_for_status()
+            return {"status": "success", "messages": response.text}
         except httpx.HTTPStatusError as e:
             raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
         except httpx.RequestError:

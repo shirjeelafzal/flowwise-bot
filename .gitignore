@@ -4,3 +4,5 @@ venv/
 Mattress Sales AI Training Guide/
 node_modules
 oldfrontend/
+.vscode/
+.idea/

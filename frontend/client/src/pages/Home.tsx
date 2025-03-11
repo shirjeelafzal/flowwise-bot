@@ -99,12 +99,24 @@ export default function Home() {
       }
     },
   });
+  const { data: recentMessages = 0 } = useQuery({
+    queryKey: ['recentMessages'],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/analytics`);
+        return response.data.messages;
+      } catch (error) {
+        console.error("Error fetching recent messages:", error);
+        return 0;
+      }
+    },
+  });
   const stats = [
     { label: "AI Model", value: "GPT-4", status: true, details: "Connected" },
     { label: "Active Channels", value: activeChannels.toString(), status: true, details: "Channels" },
     { label: "Active Users", value: activeUsers.toString(), status: true, details: "Users" },
     { label: "Active Scenarios", value: activeScenarios.toString(), status: true, details: "Scenarios" },
-    { label: "Recent Messages", value: "15", status: true, details: "Today" },
+    { label: "Recent Messages", value: recentMessages, status: true, details: "Today" },
   ];
 
   const { data: platforms = [], isLoading: isLoadingStats } = useQuery({
