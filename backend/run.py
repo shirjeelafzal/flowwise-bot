@@ -10,7 +10,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5000",         # Allows frontend running locally
         "http://192.241.167.174:5000",   # Allows frontend running on public server
-        "https://app.domuai.com",    
+        "https://app.domuai.com", 
+        "https://ali-ai.domuai.com",   
     ],
     allow_credentials=True,  # Allows cookies/auth headers in cross-origin requests
     allow_methods=["*"],     # Allows all HTTP methods (GET, POST, PUT, DELETE, etc.)
