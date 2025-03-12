@@ -2,6 +2,7 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { ViewProvider } from "./hooks/use-view";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import Home from "./pages/Home";
 import AIConfig from "./pages/AIConfig";
@@ -38,8 +39,10 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <ViewProvider>
+        <Router />
+        <Toaster />
+      </ViewProvider>
     </QueryClientProvider>
   );
 }

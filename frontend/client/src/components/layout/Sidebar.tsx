@@ -11,8 +11,38 @@ const menuItems = [
   { icon: Calendar, label: "Connection Settings", href: "/settings" },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isMobile?: boolean;
+}
+
+export default function Sidebar({ isMobile = false }: SidebarProps) {
   const [location] = useLocation();
+
+  if (isMobile) {
+    return (
+      <div className="flex justify-around items-center">
+        {menuItems.map((item) => (
+          <Link key={item.href} href={item.href}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "p-2",
+                location === item.href && "bg-brand-accent/10"
+              )}
+            >
+              <item.icon className={cn(
+                "w-5 h-5 transition-colors",
+                location === item.href
+                  ? "text-brand-accent"
+                  : "text-brand-silver group-hover:text-brand-accent"
+              )} />
+            </Button>
+          </Link>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="w-64 h-screen">

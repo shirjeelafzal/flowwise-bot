@@ -96,47 +96,42 @@ export default function Chat() {
       });
     }
   };
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+  const handleSendMessage = async () => {
+    if (!input.trim()) return;
 
+    const userMessage = input.trim();
+    setInput("");
 
+    // Add user message to chat
+    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    setIsLoading(true);
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
-
-const handleSendMessage = async () => {
-  if (!input.trim()) return;
-
-  const userMessage = input.trim();
-  setInput("");
-
-  // Add user message to chat
-  setMessages(prev => [...prev, { role: "user", content: userMessage }]);
-  setIsLoading(true);
-
-  try {
-    const { data } = await axios.post(`${API_BASE_URL}/chat`, {
-      question: userMessage,
-      user: "123456789" // Replace with dynamic user ID if available
-    });
-
-    const assistantResponse = data.response?.[0]?.output || "I'm not sure how to respond to that.";
-
-    setMessages(prev => [...prev, { role: "assistant", content: assistantResponse }]);
-  } catch (error: any) {
-    console.error("Error sending message:", error);
-
-    toast({
-      title: "Error",
-      description: error.response?.data?.detail || "Failed to get AI response.",
-      variant: "destructive",
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
+    try {
+      const { data } = await axios.post(`${API_BASE_URL}/chat`, {
+        question: userMessage,
+        user: "123456789" // Replace with dynamic user ID if available
+      });
   
+      const assistantResponse = data.response?.[0]?.output || "I'm not sure how to respond to that.";
+  
+      setMessages(prev => [...prev, { role: "assistant", content: assistantResponse }]);
+    } catch (error: any) {
+      console.error("Error sending message:", error);
+  
+      toast({
+        title: "Error",
+        description: error.response?.data?.detail || "Failed to get AI response.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="h-full p-6 flex flex-col space-y-6">
-      <Header title="Talk to Ali" />
+      <Header title="Talk to ALI AI" />
 
       {/* Channel Selection Card */}
       <Card className="relative overflow-hidden bg-[#111318] border-brand-silver/20 p-6">
