@@ -4,6 +4,7 @@ import StatusBadge from "../components/shared/StatusBadge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import axios from "axios";
 import {
   SiFacebook,
   SiInstagram,
@@ -117,17 +118,57 @@ export default function Home() {
   });
 
   // Calculate top stats from platform data
-  const totalMessages = platforms.reduce((sum, p) => sum + p.totalMessages, 0);
+  // const totalMessages = platforms.reduce((sum, p) => sum + p.totalMessages, 0);
   const totalAnswered = platforms.reduce((sum, p) => sum + p.answered, 0);
-  const activeChannels = platforms.length;
+  // const activeChannels = platforms.length;
   const avgSuccessRate = Math.round(
     platforms.reduce((sum, p) => sum + p.successRate, 0) / platforms.length
   );
 
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+
+  const { data: totalMessages = 0 } = useQuery({
+    queryKey: ['recentMessages'],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/analytics`);
+        return response.data.messages;
+      } catch (error) {
+        console.error("Error fetching recent messages:", error);
+        return 0;
+      }
+    },
+  });
+  const { data: activeChannels = 0 } = useQuery({
+    queryKey: ['activeChannels'],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/connections`);
+        return response.data.active_channels;
+      } catch (error) {
+        console.error("Error fetching channels:", error);
+        return 0;
+      }
+    },
+  });
+  const { data: activeScenarios = 0 } = useQuery({
+    queryKey: ['activeScenarios'],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/scenarios`);
+        return response.data.active_scenarios;
+      } catch (error) {
+        console.error("Error fetching active scenarios:", error);
+        return 0;
+      }
+    },
+  });
   const stats = [
     { label: "Total Messages", value: totalMessages.toString(), status: true, details: "All Channels" },
     { label: "Messages Answered", value: totalAnswered.toString(), status: true, details: "Success Rate: " + avgSuccessRate + "%" },
     { label: "Active Channels", value: activeChannels.toString(), status: true, details: "Connected" },
+    { label: "Active Scenarios", value: activeScenarios.toString(), status: true, details: "Scenarios" },
   ];
 
   // Fetch recent activity
